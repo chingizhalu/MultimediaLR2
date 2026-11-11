@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Компьютерные видеоигры · Веб-презентация · Вариант 3</title>
+<style>
+:root{
+  --cyan:#00e5ff; --red:#ff4c6a; --purple:#a855f7;
+  --yellow:#ffd93d; --green:#4ade80;
+  --text:#e8e8ea; --dim:#8a8a9c;
+  --bg:#0a0a15; --bg2:#12121e;
+  --footer-h: 42px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'Segoe UI',Roboto,system-ui,sans-serif;
+  background:var(--bg); color:var(--text);
+  overflow:hidden;
+}
+
+/* ================= КОНТЕЙНЕР СЛАЙДОВ ================= */
+.deck{
+  position:relative;
+  width:100vw; height:100vh;
+  overflow:hidden;
+}
+.slide{
+  position:absolute; inset:0;
+  padding:50px 70px calc(var(--footer-h) + 40px) 70px;
+  display:flex; flex-direction:column;
+  opacity:0; visibility:hidden;
+  transform:translateX(40px);
+  transition: opacity .4s ease, transform .4s ease, visibility .4s;
+  overflow-y:auto;
+}
+.slide.active{
+  opacity:1; visibility:visible; transform:translateX(0);
+}
+.slide.prev{ transform:translateX(-40px); }
+
+/* ================= КОЛОНТИТУЛ ================= */
+.footer{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  height:var(--footer-h);
+  background:rgba(10,10,21,.92);
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 30px;
+  font-size:11px; color:var(--dim);
+  letter-spacing:.4px;
+  z-index:1000;
+  backdrop-filter: blur(6px);
+}
+.footer .f-left{ display:flex; gap:20px; align-items:center; }
+.footer .f-left span{ white-space:nowrap; }
+.footer .f-left span + span::before{ content:'·'; margin-right:20px; opacity:.5; }
+.footer .f-right{ display:flex; gap:16px; align-items:center; }
+.footer .variant{
+  color:var(--cyan); font-weight:700;
+  padding:2px 10px;
+  border:1px solid rgba(0,229,255,.3);
+  border-radius:20px;
+}
+.footer .slide-counter{ color:var(--text); font-variant-numeric:tabular-nums; }
+.footer .progress{
+  position:absolute; left:0; bottom:0; height:2px;
+  background:linear-gradient(90deg, var(--cyan), var(--purple), var(--red));
+  transition: width .3s ease;
+}
+
+/* ================= ТИПОГРАФИКА ================= */
+.eyebrow{
+  font-size:12px; font-weight:700; letter-spacing:3px;
+  text-transform:uppercase; color:var(--dim);
+  margin-bottom:14px;
+}
+.divider{ width:50px; height:3px; background:var(--red); margin-bottom:24px; }
+h1{ font-size:40px; line-height:1.1; font-weight:900; letter-spacing:-.5px; }
+h2{ font-size:28px; line-height:1.15; font-weight:800; margin-bottom:8px; }
+h3{ font-size:16px; font-weight:700; }
+p{ font-size:16px; line-height:1.55; }
+em.grad{
+  font-style:normal;
+  background:linear-gradient(90deg, var(--cyan), var(--purple), var(--red));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* ================= СЛАЙД 1 · ТИТУЛ ================= */
+.s-title{
+  background:radial-gradient(circle at 25% 40%, #1c1c38 0%, #07070f 70%);
+  justify-content:center;
+}
+.s-title h1{ max-width:900px; margin:16px 0 26px; }
+.s-title .lead{
+  max-width:760px; color:var(--text); font-size:17px; line-height:1.65;
+}
+.s-title .meta{
+  display:flex; gap:50px; margin-top:44px; font-size:13px; color:var(--dim);
+}
+.s-title .meta b{ color:var(--cyan); font-size:22px; display:block; margin-bottom:4px; }
+
+/* ================= СЛАЙД 2 · ПЛАН ================= */
+.s-plan{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:14px 60px; align-content:start;
+  padding-top:20px;
+}
+.s-plan .p-row{
+  display:flex; gap:16px; padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.s-plan .p-row .n{
+  font-family:'Courier New',monospace; font-weight:900;
+  font-size:20px; color:var(--cyan); min-width:40px;
+}
+.s-plan .p-row:nth-child(3n) .n{ color:var(--purple); }
+.s-plan .p-row:nth-child(3n+1) .n{ color:var(--red); }
+.s-plan .p-row .tt{ font-size:15px; font-weight:700; color:#fff; margin-bottom:3px; }
+.s-plan .p-row .dd{ font-size:12px; color:var(--dim); line-height:1.45; }
+
+/* ================= СЛАЙД 3 · ИСТОКИ ================= */
+.s-origins p.lead{ font-size:14px; max-width:900px; margin-bottom:24px; color:var(--text); }
+.cards-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; flex:1; }
+.o-card{
+  background:var(--bg2); border-radius:12px;
+  padding:24px; position:relative;
+  border-top:3px solid var(--cyan);
+}
+.o-card:nth-child(2){ border-top-color:var(--purple); }
+.o-card:nth-child(3){ border-top-color:var(--red); }
+.o-card .yr{
+  font-size:34px; font-weight:900; line-height:1;
+  color:var(--cyan); margin-bottom:12px;
+}
+.o-card:nth-child(2) .yr{ color:var(--purple); }
+.o-card:nth-child(3) .yr{ color:var(--red); }
+.o-card .ttl{ font-size:15px; font-weight:700; color:#fff; margin-bottom:10px; }
+.o-card .desc{ font-size:12px; color:var(--text); line-height:1.55; }
+
+/* ================= СЛАЙД 4 · ATARI ================= */
+.s-atari{ display:grid; grid-template-columns:1.4fr 1fr; padding:0; }
+.s-atari .left{
+  background:linear-gradient(160deg,#15152a,#0a0a15);
+  padding:60px; display:flex; flex-direction:column; justify-content:center;
+}
+.s-atari .right{
+  background:var(--red); padding:60px 45px;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.s-atari .yr{
+  font-size:42px; font-weight:900; color:var(--cyan); line-height:1; margin-bottom:8px;
+}
+.s-atari .ttl{ font-size:24px; font-weight:700; color:#fff; margin:18px 0 20px; line-height:1.2; }
+.s-atari .txt{ font-size:14px; color:var(--text); line-height:1.7; max-width:540px; }
+.s-atari .right h3{
+  font-size:12px; color:rgba(255,255,255,.85); letter-spacing:3px;
+  text-transform:uppercase; margin-bottom:18px;
+}
+.s-atari .ev{
+  font-size:14px; color:#fff; padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.15);
+  display:flex; justify-content:space-between;
+}
+.s-atari .ev span:first-child{ font-weight:700; }
+.s-atari .foot{
+  font-size:12px; color:rgba(255,255,255,.85);
+  margin-top:20px; font-style:italic; line-height:1.5;
+}
+
+/* ================= СЛАЙД 5 · КРИЗИС ================= */
+.s-crisis .cmp{
+  display:grid; grid-template-columns:1fr auto 1fr;
+  gap:30px; align-items:center; margin:30px 0;
+}
+.s-crisis .st{
+  background:var(--bg2); border-radius:12px;
+  padding:26px 34px; border-top:4px solid var(--cyan);
+}
+.s-crisis .st.after{ border-top-color:var(--red); }
+.s-crisis .st .n{ font-size:34px; font-weight:900; color:var(--cyan); line-height:1; }
+.s-crisis .st.after .n{ color:var(--red); }
+.s-crisis .st .l{
+  font-size:11px; color:var(--dim); letter-spacing:2px;
+  text-transform:uppercase; margin-top:8px;
+}
+.s-crisis .arw{ font-size:30px; color:var(--dim); }
+.s-crisis .story{ font-size:14px; line-height:1.7; color:var(--text); }
+.s-crisis .story p + p{ margin-top:14px; }
+
+/* ================= СЛАЙД 6 · ВИДЕО (вариант 3) ================= */
+.s-video{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:30px;
+  align-items:start;
+}
+.s-video .video-wrap{
+  background:#000;
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid rgba(0,229,255,.25);
+  box-shadow:0 0 40px rgba(0,229,255,.08);
+}
+.s-video video{
+  width:100%;
+  height:auto;
+  display:block;
+  max-height:520px;
+}
+.s-video .meta .label{
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--dim);
+  text-transform:uppercase;
+  margin-bottom:10px;
+  font-weight:700;
+}
+.s-video .meta ul{
+  list-style:none;
+  padding:0;
+  margin:0 0 20px;
+}
+.s-video .meta li{
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  font-size:13px;
+  color:var(--text);
+  line-height:1.5;
+}
+.s-video .meta li b{ color:var(--cyan); }
+
+/* ================= СЛАЙД 7 · АУДИО (вариант 3) ================= */
+.s-audio{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+  align-items:center;
+}
+.s-audio .wave{
+  background:linear-gradient(160deg,#0a1a22,#05050a);
+  border-radius:14px;
+  border:1px solid rgba(0,229,255,.25);
+  padding:36px 30px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.s-audio .wave .bars{
+  display:flex;
+  justify-content:center;
+  gap:5px;
+  height:120px;
+  align-items:flex-end;
+  margin-bottom:24px;
+}
+.s-audio .wave .bars i{
+  display:block;
+  width:6px;
+  background:linear-gradient(180deg, var(--cyan), var(--purple));
+  border-radius:3px;
+  animation:pulse 1.2s ease-in-out infinite;
+  height:20%;
+}
+@keyframes pulse{
+  0%,100%{ transform:scaleY(.4); }
+  50%{ transform:scaleY(1); }
+}
+.s-audio .wave .bars i:nth-child(2n){ animation-delay:.15s; }
+.s-audio .wave .bars i:nth-child(3n){ animation-delay:.3s; }
+.s-audio .wave .bars i:nth-child(5n){ animation-delay:.45s; }
+.s-audio .wave audio{
+  width:100%;
+  margin-top:10px;
+  filter:invert(.92) hue-rotate(180deg);
+}
+.s-audio .meta h3{
+  font-size:16px;
+  color:var(--cyan);
+  margin-bottom:12px;
+  letter-spacing:1px;
+}
+.s-audio .meta p{
+  font-size:13px;
+  color:var(--text);
+  line-height:1.6;
+  margin-bottom:16px;
+}
+
+/* ================= СЛАЙД 8 · ЭКОНОМИКА ================= */
+.s-econ .cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  flex:1;
+}
+.s-econ .panel{
+  background:var(--bg2);
+  border-radius:12px;
+  padding:26px;
+  border-top:3px solid var(--yellow);
+}
+.s-econ .panel.income{ border-top-color:var(--green); }
+.s-econ .panel h3{
+  font-size:13px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+  color:var(--yellow);
+}
+.s-econ .panel.income h3{ color:var(--green); }
+.s-econ .row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  font-size:13px;
+}
+.s-econ .row:last-child{ border-bottom:none; }
+.s-econ .row .label{ color:var(--text); }
+.s-econ .row .val{
+  color:var(--yellow);
+  font-weight:800;
+  font-size:14px;
+}
+.s-econ .income .row .val{ color:var(--green); }
+
+/* ================= СЛАЙД 9 · ПСИХИКА ================= */
+.s-psych .badge{
+  display:inline-block;
+  padding:5px 14px;
+  background:rgba(255,76,106,.15);
+  color:var(--red);
+  border:1px solid rgba(255,76,106,.3);
+  border-radius:20px;
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:20px;
+  align-self:flex-start;
+}
+.s-psych .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:10px;
+}
+.s-psych .card{
+  background:var(--bg2);
+  border-radius:10px;
+  padding:20px 24px;
+  border-left:4px solid var(--red);
+}
+.s-psych .card .h{
+  font-size:14px; font-weight:700; color:#fff; margin-bottom:8px;
+}
+.s-psych .card .d{
+  font-size:12px; color:var(--text); line-height:1.55;
+}
+
+/* ================= СЛАЙД 10 · ТЕЛО ================= */
+.s-body .strip{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-top:20px;
+  flex:1;
+  align-content:start;
+}
+.s-body .cv{
+  background:var(--bg2);
+  border-top:3px solid var(--red);
+  border-radius:0 0 10px 10px;
+  padding:22px 20px;
+}
+.s-body .cv .ic{
+  font-size:30px; display:block; margin-bottom:12px;
+}
+.s-body .cv .nm{
+  font-size:12px; font-weight:800; color:#fff;
+  letter-spacing:1px; margin-bottom:8px; text-transform:uppercase;
+}
+.s-body .cv .ds{ font-size:12px; color:var(--text); line-height:1.5; }
+
+/* ================= СЛАЙД 11 · СОЦИУМ ================= */
+.s-social{
+  display:grid;
+  grid-template-columns:1fr 1.3fr;
+  gap:40px;
+  align-items:center;
+}
+.s-social .q .mark{
+  font-size:60px;
+  color:var(--red);
+  line-height:.8;
+  font-family:Georgia,serif;
+  margin-bottom:8px;
+}
+.s-social .q .txt{
+  font-size:17px;
+  color:#fff;
+  font-style:italic;
+  line-height:1.55;
+  font-weight:300;
+}
+.s-social .q .auth{
+  font-size:11px;
+  color:var(--dim);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-top:16px;
+}
+.s-social .items{ display:flex; flex-direction:column; gap:14px; }
+.s-social .it{
+  background:var(--bg2);
+  border-radius:10px;
+  padding:16px 20px;
+  border-left:4px solid var(--red);
+}
+.s-social .it .h{
+  font-size:13px;
+  font-weight:800;
+  color:var(--red);
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.s-social .it .d{
+  font-size:12px;
+  color:var(--text);
+  line-height:1.55;
+}
+
+/* ================= СЛАЙД 12 · ПОЛЬЗА ================= */
+.s-benefits{
+  background:linear-gradient(160deg,#0a1a15,#0a0a15);
+}
+.s-benefits .grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:20px;
+}
+.s-benefits .p{
+  background:rgba(74,222,128,.06);
+  border-left:4px solid var(--green);
+  border-radius:0 10px 10px 0;
+  padding:18px 22px;
+}
+.s-benefits .p .h{
+  font-size:14px;
+  font-weight:800;
+  color:var(--green);
+  margin-bottom:8px;
+}
+.s-benefits .p .d{
+  font-size:12px;
+  color:var(--text);
+  line-height:1.55;
+}
+
+/* ================= СЛАЙД 13 · ФИНАЛ ================= */
+.s-final{
+  background:radial-gradient(circle at 50% 50%, #1a1a35, #05050a);
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+.s-final .end{
+  font-size:64px;
+  font-weight:900;
+  letter-spacing:-1px;
+  line-height:1.15;
+  color:#fff;
+}
+.s-final .end em.grad{ display:inline; }
+.s-final .sub{
+  font-size:13px;
+  color:var(--dim);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  margin-top:30px;
+}
+
+/* ================= НАВИГАЦИЯ ================= */
+.nav-hint{
+  position:fixed;
+  bottom:calc(var(--footer-h) + 14px);
+  right:24px;
+  font-size:10px;
+  color:var(--dim);
+  letter-spacing:1px;
+  z-index:900;
+  opacity:.7;
+}
+.nav-arrows{
+  position:fixed;
+  right:24px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:900;
+}
+.nav-arrows button{
+  width:38px; height:38px;
+  border-radius:50%;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--text);
+  font-size:16px;
+  cursor:pointer;
+  transition:background .2s, border .2s;
+}
+.nav-arrows button:hover{
+  background:rgba(0,229,255,.15);
+  border-color:rgba(0,229,255,.4);
+  color:var(--cyan);
+}
+.nav-arrows button:disabled{
+  opacity:.25;
+  cursor:default;
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- =============================================================== -->
+  <!-- 1 · ТИТУЛ -->
+  <!-- =============================================================== -->
+  <section class="slide s-title active">
+    <div class="eyebrow">Веб-презентация · Вариант 3</div>
+    <div class="divider"></div>
+    <h1>Компьютерные <em class="grad">видеоигры</em>:<br>эволюция, технологии, влияние</h1>
+    <p class="lead">От первых научных экспериментов на осциллографах до глобальной индустрии с оборотом в 17 трлн ₽ в год. История, движки, экономика и тёмная сторона гейминга.</p>
+    <div class="meta">
+      <div><b>13</b>слайдов</div>
+      <div><b>70+</b>лет истории</div>
+      <div><b>17 трлн ₽</b>рынок</div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 2 · ПЛАН -->
+  <!-- =============================================================== -->
+  <section class="slide">
+    <div class="eyebrow">Содержание</div>
+    <div class="divider"></div>
+    <h2>План презентации</h2>
+    <div class="s-plan" style="margin-top:20px;">
+      <div class="p-row"><span class="n">01</span><div><div class="tt">Истоки · 1950–60-е</div><div class="dd">Первые игры как научные эксперименты</div></div></div>
+      <div class="p-row"><span class="n">02</span><div><div class="tt">Atari и рождение бизнеса</div><div class="dd">Pong, аркадные автоматы, консоли</div></div></div>
+      <div class="p-row"><span class="n">03</span><div><div class="tt">Кризис 1983 и Nintendo</div><div class="dd">Обвал рынка США и возрождение</div></div></div>
+      <div class="p-row"><span class="n">04</span><div><div class="tt">Видео на слайде</div><div class="dd">HTML-тег video · вариант 3</div></div></div>
+      <div class="p-row"><span class="n">05</span><div><div class="tt">Аудио на слайде</div><div class="dd">HTML-тег audio · вариант 3</div></div></div>
+      <div class="p-row"><span class="n">06</span><div><div class="tt">Экономика индустрии</div><div class="dd">Бюджеты и доходы</div></div></div>
+      <div class="p-row"><span class="n">07</span><div><div class="tt">Отрицательное влияние</div><div class="dd">Психика, тело, социум</div></div></div>
+      <div class="p-row"><span class="n">08</span><div><div class="tt">Польза видеоигр</div><div class="dd">Когнитивные навыки, карьера</div></div></div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 3 · ИСТОКИ -->
+  <!-- =============================================================== -->
+  <section class="slide s-origins">
+    <div class="eyebrow">Истоки · 1950–60-е · Наука, а не развлечение</div>
+    <div class="divider"></div>
+    <h2>Первые шаги видеоигр</h2>
+    <p class="lead">Первые видеоигры появились не как развлечение, а как демонстрация возможностей вычислительных машин. Учёные и инженеры писали их в свободное время, чтобы показать коллегам, на что способны компьютеры.</p>
+    <div class="cards-3">
+      <div class="o-card">
+        <div class="yr">1952</div>
+        <div class="ttl">«OXO» · Александр Дуглас</div>
+        <div class="desc">Крестики-нолики на компьютере <b style="color:var(--cyan)">EDSAC</b> в Кембридже. Первая игра с визуальным выводом на экран.</div>
+      </div>
+      <div class="o-card">
+        <div class="yr">1958</div>
+        <div class="ttl">«Tennis for Two» · Хигинботам</div>
+        <div class="desc">Симулятор тенниса на <b style="color:var(--purple)">осциллографе</b> в Брукхейвенской лаборатории.</div>
+      </div>
+      <div class="o-card">
+        <div class="yr">1962</div>
+        <div class="ttl">«Spacewar!» · Стив Расселл</div>
+        <div class="desc">Космический бой на <b style="color:var(--red)">PDP-1</b> в MIT. Первая игра с полноценным геймплеем.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 4 · ATARI -->
+  <!-- =============================================================== -->
+  <section class="slide s-atari">
+    <div class="left">
+      <div class="yr">1972</div>
+      <div class="ttl">Atari превращает игру в бизнес</div>
+      <div class="txt">Нолан Бушнелл и Тед Дэбни основывают Atari и выпускают <b style="color:var(--cyan)">Pong</b> — простейший теннис, ставший хитом аркадных залов. Через пять лет выходит <b style="color:var(--cyan)">Atari 2600</b> — первая массовая домашняя консоль. Игры перестают быть аттракционом и становятся товаром.</div>
+    </div>
+    <div class="right">
+      <h3>Ключевые вехи</h3>
+      <div class="ev"><span>1971</span><span>Computer Space</span></div>
+      <div class="ev"><span>1972</span><span>Pong · основание Atari</span></div>
+      <div class="ev"><span>1977</span><span>Atari 2600</span></div>
+      <div class="ev"><span>1979</span><span>Adventure · Asteroids</span></div>
+      <div class="foot">К 1982 году Atari контролирует ~80% рынка домашних игр в США.</div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 5 · КРИЗИС -->
+  <!-- =============================================================== -->
+  <section class="slide s-crisis">
+    <div class="eyebrow">Кризис 1983 · Обвал рынка США</div>
+    <div class="divider"></div>
+    <h2>Как индустрия чуть не умерла</h2>
+    <div class="cmp">
+      <div class="st">
+        <div class="n">288 млрд ₽</div>
+        <div class="l">до кризиса · 1982</div>
+      </div>
+      <div class="arw">→</div>
+      <div class="st after">
+        <div class="n">9 млрд ₽</div>
+        <div class="l">после · 1985</div>
+      </div>
+    </div>
+    <div class="story">
+      <p>Причина — перенасыщение рынка низкокачественными играми. Сторонние разработчики наводнили Atari 2600 мусором, а знаменитая <span style="color:var(--red)">E.T. the Extra-Terrestrial</span> (1982) стала символом провала: миллионы картриджей были закопаны на свалке в Нью-Мексико.</p>
+      <p>Рынок США рухнул, доверие покупателей исчезло. Спасение пришло из Японии: в <b style="color:var(--cyan)">1985 году</b> Nintendo выпускает <b style="color:var(--cyan)">NES</b> со строгим контролем качества и культовыми франшизами — Mario, Zelda, Metroid.</p>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 6 · ВИДЕО (вариант 3) -->
+  <!-- =============================================================== -->
+  <section class="slide s-video">
+    <div style="grid-column:1/-1;margin-bottom:20px;">
+      <div class="eyebrow">Мультимедиа · Видео на слайде · Вариант 3</div>
+      <div class="divider"></div>
+      <h2>Видео: демонстрация игрового процесса</h2>
+    </div>
+
+    <div class="video-wrap">
+      <video
+        controls
+        preload="metadata"
+        poster="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Crect width='800' height='450' fill='%230a0a15'/%3E%3Ctext x='400' y='230' font-family='Segoe UI' font-size='28' fill='%2300e5ff' text-anchor='middle'%3EВидео-демонстрация%3C/text%3E%3Ctext x='400' y='270' font-family='Segoe UI' font-size='14' fill='%238a8a9c' text-anchor='middle'%3EНажмите Play%3C/text%3E%3C/svg%3E"
+      >
+        <source src="frozenlake8x8_agent.mp4" type="video/mp4">
+        Ваш браузер не поддерживает тег <code>&lt;video&gt;</code>.
+      </video>
+    </div>
+
+    <div class="meta">
+      <div class="label">Что демонстрирует слайд</div>
+      <ul>
+        <li><b>HTML-тег &lt;video&gt;</b> — встроенное воспроизведение видеофайла прямо в браузере.</li>
+        <li><b>Атрибут controls</b> — показывает стандартные кнопки Play/Pause, громкость, полноэкранный режим.</li>
+        <li><b>preload="metadata"</b> — подгружает только заголовок видео, а не весь файл.</li>
+        <li><b>Атрибут poster</b> — картинка-заглушка, отображается до нажатия Play.</li>
+        <li><b>Форматы</b> — MP4, WebM, OGG. Можно указать несколько <code>&lt;source&gt;</code> для совместимости.</li>
+        <li><b>Вместо URL</b> можно указать локальный файл, например <code>gameplay.mp4</code> рядом с HTML.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 7 · АУДИО (вариант 3) -->
+  <!-- =============================================================== -->
+  <section class="slide s-audio">
+    <div>
+      <div class="eyebrow">Мультимедиа · Аудио на слайде · Вариант 3</div>
+      <div class="divider"></div>
+      <h2>Звук: музыка из видеоигр</h2>
+      <div class="wave" style="margin-top:24px;">
+        <div class="bars">
+          <i style="height:40%"></i><i style="height:70%"></i><i style="height:90%"></i>
+          <i style="height:55%"></i><i style="height:80%"></i><i style="height:35%"></i>
+          <i style="height:65%"></i><i style="height:95%"></i><i style="height:50%"></i>
+          <i style="height:75%"></i><i style="height:45%"></i><i style="height:85%"></i>
+          <i style="height:60%"></i><i style="height:70%"></i><i style="height:30%"></i>
+          <i style="height:55%"></i><i style="height:90%"></i><i style="height:40%"></i>
+        </div>
+        <audio controls preload="metadata">
+          <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" type="audio/mpeg">
+          Ваш браузер не поддерживает тег <code>&lt;audio&gt;</code>.
+        </audio>
+      </div>
+    </div>
+
+    <div class="meta">
+      <h3>Как добавлено аудио</h3>
+      <p>На слайде используется HTML-тег <code style="color:var(--purple)">&lt;audio&gt;</code> с атрибутом <b style="color:var(--cyan)">controls</b> — он показывает стандартный плеер с кнопкой Play, полосой прокрутки и регулировкой громкости.</p>
+      <p>Внутри тега указан источник <code style="color:var(--purple)">&lt;source&gt;</code> с типом <b style="color:var(--cyan)">audio/mpeg</b> (MP3). Можно добавить несколько источников — браузер выберет первый поддерживаемый.</p>
+      <p>Анимация «волн» слева — это чисто декоративный эффект на CSS-анимациях <code style="color:var(--purple)">@keyframes</code>, чтобы слайд не выглядел статичным.</p>
+      <p><b style="color:var(--green)">Заменить на свой звук:</b> положи MP3-файл рядом с index.html и замени URL в атрибуте <code style="color:var(--purple)">src</code> на имя файла, например <code style="color:var(--purple)">soundtrack.mp3</code>.</p>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 8 · ЭКОНОМИКА -->
+  <!-- =============================================================== -->
+  <section class="slide s-econ">
+    <div class="eyebrow">Экономика индустрии</div>
+    <div class="divider"></div>
+    <h2>Бюджеты и доходы</h2>
+    <div class="cols" style="margin-top:20px;">
+      <div class="panel">
+        <h3>Сколько вкладывают</h3>
+        <div class="row"><span class="label">AAA-игры</span><span class="val">4,5–27 млрд ₽</span></div>
+        <div class="row"><span class="label">AA-игры</span><span class="val">90 млн – 1,8 млрд ₽</span></div>
+        <div class="row"><span class="label">Инди</span><span class="val">1–45 млн ₽</span></div>
+        <div class="row"><span class="label">GTA V</span><span class="val">~24 млрд ₽</span></div>
+        <div class="row"><span class="label">Cyberpunk 2077</span><span class="val">~30 млрд ₽</span></div>
+        <div class="row"><span class="label">Star Citizen (краудфандинг)</span><span class="val">&gt;54 млрд ₽</span></div>
+      </div>
+      <div class="panel income">
+        <h3>Сколько зарабатывают</h3>
+        <div class="row"><span class="label">Рынок 2024</span><span class="val">17 трлн ₽</span></div>
+        <div class="row"><span class="label">Fortnite</span><span class="val">1,8 трлн ₽</span></div>
+        <div class="row"><span class="label">Honor of Kings</span><span class="val">1,35 трлн ₽</span></div>
+        <div class="row"><span class="label">GTA V</span><span class="val">720 млрд ₽</span></div>
+        <div class="row"><span class="label">Больше кино + музыки</span><span class="val">вместе взятых</span></div>
+        <div class="row"><span class="label">Основной доход</span><span class="val">F2P + микротранзакции</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 9 · ПСИХИКА -->
+  <!-- =============================================================== -->
+  <section class="slide s-psych">
+    <span class="badge">⚠ Тёмная сторона</span>
+    <div class="eyebrow">Отрицательное влияние · Психика</div>
+    <div class="divider"></div>
+    <h2>Что страдает в голове</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="h">Игровое расстройство</div>
+        <div class="d">ВОЗ включила «gaming disorder» в МКБ-11 в <b style="color:var(--red)">2018 году</b>. Признаки: потеря контроля над временем игры, приоритет игры над другими занятиями, продолжение несмотря на негативные последствия.</div>
+      </div>
+      <div class="card">
+        <div class="h">Эскапизм и изоляция</div>
+        <div class="d">Игры дают уход от реальных проблем. Человек заменяет живое общение виртуальным, теряет социальные навыки и интерес к реальной жизни.</div>
+      </div>
+      <div class="card">
+        <div class="h">Спорная связь с агрессией</div>
+        <div class="d">Кратковременный рост агрессии фиксируется, но долгосрочная причинно-следственная связь <b style="color:var(--yellow)">не доказана</b>.</div>
+      </div>
+      <div class="card">
+        <div class="h">Лутбоксы как азарт</div>
+        <div class="d">Механика случайных наград критикуется как «азартная игра для детей». В Бельгии и Нидерландах лутбоксы запрещены.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 10 · ТЕЛО -->
+  <!-- =============================================================== -->
+  <section class="slide s-body">
+    <div class="eyebrow">Отрицательное влияние · Тело</div>
+    <div class="divider"></div>
+    <h2>Что страдает в теле</h2>
+    <div class="strip">
+      <div class="cv"><span class="ic">🛋️</span><div class="nm">Гиподинамия</div><div class="ds">Малоподвижный образ жизни ведёт к <b style="color:var(--red)">ожирению</b>, проблемам с сердцем и сосудами, диабету 2 типа.</div></div>
+      <div class="cv"><span class="ic">👁️</span><div class="nm">Зрение</div><div class="ds">Синдром компьютерного зрения: <b style="color:var(--red)">сухость глаз</b>, усталость, головные боли, прогрессирующая близорукость у детей.</div></div>
+      <div class="cv"><span class="ic">🦴</span><div class="nm">Осанка и кисти</div><div class="ds"><b style="color:var(--red)">Сколиоз</b>, боли в спине и шее, туннельный синдром запястья при интенсивной игре.</div></div>
+      <div class="cv"><span class="ic">😴</span><div class="nm">Сон</div><div class="ds">Нарушение режима, <b style="color:var(--red)">недосып</b>, снижение концентрации, ухудшение памяти и настроения.</div></div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 11 · СОЦИУМ -->
+  <!-- =============================================================== -->
+  <section class="slide s-social">
+    <div>
+      <div class="eyebrow">Отрицательное влияние · Социум</div>
+      <div class="divider"></div>
+      <h2 style="margin-bottom:20px;">Что страдает в обществе</h2>
+      <div class="q">
+        <div class="mark">"</div>
+        <div class="txt">Онлайн-круг общения расширяется, а офлайн — сужается. Игры дают друзей по всему миру, но забирают присутствие рядом.</div>
+        <div class="auth">— Социологи о гейминге</div>
+      </div>
+    </div>
+    <div class="items">
+      <div class="it">
+        <div class="h">Токсичность</div>
+        <div class="d">Кибербуллинг, оскорбления и агрессия в голосовых и текстовых чатах. Особенно острая проблема в соревновательных онлайн-играх.</div>
+      </div>
+      <div class="it">
+        <div class="h">Финансовые ловушки</div>
+        <div class="d">Микротранзакции, pay-to-win, сезонные пропуска и донат-механики формируют зависимость и приводят к незапланированным тратам.</div>
+      </div>
+      <div class="it">
+        <div class="h">Что делать</div>
+        <div class="d">Цифровая гигиена, родительский контроль, лимиты времени, осознанное отношение к донатам и открытый диалог в семье.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 12 · ПОЛЬЗА -->
+  <!-- =============================================================== -->
+  <section class="slide s-benefits">
+    <div class="eyebrow" style="color:var(--green);">Не только вред · Польза видеоигр</div>
+    <div class="divider" style="background:var(--green);"></div>
+    <h2 style="color:var(--green);">Что гейминг даёт человеку</h2>
+    <div class="grid">
+      <div class="p">
+        <div class="h">Когнитивные навыки</div>
+        <div class="d">Развитие реакции, стратегического мышления, многозадачности, пространственного восприятия и умения работать в команде.</div>
+      </div>
+      <div class="p">
+        <div class="h">Образование</div>
+        <div class="d">Serious games, симуляторы для пилотов и хирургов, обучающие платформы для школ и вузов, языковые игры.</div>
+      </div>
+      <div class="p">
+        <div class="h">Социализация</div>
+        <div class="d">Онлайн-сообщества, кооперативные игры, киберспортивные команды — люди находят друзей и единомышленников по всему миру.</div>
+      </div>
+      <div class="p">
+        <div class="h">Карьера и творчество</div>
+        <div class="d">Стриминг, киберспорт, геймдизайн, разработка, моддинг, левел-дизайн — целые индустрии выросли вокруг видеоигр.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================== -->
+  <!-- 13 · ФИНАЛ -->
+  <!-- =============================================================== -->
+  <section class="slide s-final">
+    <div class="end">Спасибо <em class="grad">за внимание</em></div>
+    <div class="sub">Веб-презентация · Вариант 3</div>
+  </section>
+
+</div>
+
+<!-- =============================================================== -->
+<!-- КОЛОНТИТУЛ (присутствует на каждом слайде) -->
+<!-- ▼▼▼ МЕНЯЙ ЗДЕСЬ СВОИ ДАННЫЕ ▼▼▼ -->
+<!-- =============================================================== -->
+<div class="footer">
+  <div class="f-left">
+    <span>Мурадханов Чингиз Баширович</span>
+    <span>ИУ3-32М</span>
+    <span>chingizhalu@gmail.com</span>
+  </div>
+  <div class="f-right">
+    <span class="variant">Вариант 3</span>
+    <span class="slide-counter" id="counter">1 / 13</span>
+  </div>
+  <div class="progress" id="progress" style="width: 7.69%"></div>
+</div>
+<!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
+
+<div class="nav-hint">← → · ПРОБЕЛ · F (фуллскрин)</div>
+<div class="nav-arrows">
+  <button id="btnPrev" aria-label="Назад">↑</button>
+  <button id="btnNext" aria-label="Вперёд">↓</button>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  let current = 0;
+
+  function render(){
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === current);
+      s.classList.toggle('prev', i < current);
+    });
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === slides.length - 1;
+  }
+
+  function go(delta){
+    const next = Math.max(0, Math.min(slides.length - 1, current + delta));
+    if (next !== current){ current = next; render(); }
+  }
+
+  function goTo(i){ current = Math.max(0, Math.min(slides.length-1, i)); render(); }
+
+  btnPrev.addEventListener('click', () => go(-1));
+  btnNext.addEventListener('click', () => go(1));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown'){
+      e.preventDefault(); go(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp'){
+      e.preventDefault(); go(-1);
+    } else if (e.key === 'Home'){ goTo(0); }
+    else if (e.key === 'End'){ goTo(slides.length - 1); }
+    else if (e.key === 'f' || e.key === 'F'){
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  // свайпы на телефоне
+  let touchX = 0, touchY = 0;
+  document.addEventListener('touchstart', e => {
+    touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
+  }, {passive:true});
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    const dy = e.changedTouches[0].clientY - touchY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60){
+      go(dx < 0 ? 1 : -1);
+    } else if (Math.abs(dy) > 60){
+      go(dy < 0 ? 1 : -1);
+    }
+  }, {passive:true});
+
+  render();
+})();
+</script>
+
+</body>
+</html>
